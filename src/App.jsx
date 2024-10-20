@@ -2,12 +2,14 @@ import React, { useState } from 'react';
 import './App.css';
 import SideBar from './components/sidebar/sideBar';
 import Notes from './components/notes/notes';
+import AI from './components/ai/ai';
 
 const App = () => {
   const [notes, setNotes] = useState([]);
   const [active, setactive] = useState(null);
   const [selectedTag, setSelectedTag] = useState("");
   const [searching, searchingNote] = useState("");
+  
 
   const newnote = () => {
     const newNote = {
@@ -22,7 +24,7 @@ const App = () => {
   const deleteNote = (id) => {
     setNotes(notes.filter((note) => note.id !== id));
     if (active && active.id === id) {
-      setactive(null);
+      setactive('');
     }
   };
 
@@ -54,7 +56,8 @@ const App = () => {
         searchingNote={searchingNote}
         colortag={colortag}
       />
-      <Notes className="notes" active={active} onUpdateNote={updateNote} />
+      <AI />
+      <Notes className="notes" active={active} updateNote={updateNote} />
     </div>
   );
 };

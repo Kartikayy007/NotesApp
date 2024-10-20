@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Styles from './notes.module.css';
 
-const Notes = ({ active, onUpdateNote }) => {
+const Notes = ({ active, updateNote }) => {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
 
@@ -17,7 +17,7 @@ const Notes = ({ active, onUpdateNote }) => {
 
   const handleTitleChange = (e) => {
     setTitle(e.target.value);
-    onUpdateNote({
+    updateNote({
       ...active,
       title: e.target.value,
     });
@@ -25,7 +25,7 @@ const Notes = ({ active, onUpdateNote }) => {
 
   const handleContentChange = (e) => {
     setContent(e.target.value);
-    onUpdateNote({
+    updateNote({
       ...active,
       content: e.target.value,
     });

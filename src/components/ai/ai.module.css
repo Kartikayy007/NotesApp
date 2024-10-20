@@ -1,0 +1,174 @@
+.AiButton {
+    right: 2%;
+    bottom: 3%;
+    height: 100px;
+    width: 100px;
+    background-color: black;
+    position: fixed;
+    border-radius: 50%;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    z-index: 12;
+  }
+
+
+  .AiButton:hover {
+    background: linear-gradient(
+      90deg,
+      black 20%,
+      yellow 25%,
+      red 45%,
+      purple 55%,
+      blue 65%,
+      black 80%
+    );
+    background-position: 0;
+    background-size: 900%;
+    animation: gradientShift 0.5s ease-in-out;
+  }
+  @keyframes gradientShift {
+    0% {
+      background-position: 0%;
+    }
+    100% {
+      background-position: 100%;
+    }
+  }
+  
+  
+  .AiButton img {
+      height: 50px;
+    width: 50px;
+  }
+  
+  .popup {
+    position: fixed;
+    bottom: 120px;
+    background-color: #1e1e1e;
+    width: 350px;
+    max-height: 80vh;
+    right: 20px;
+    border-radius: 10px;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    z-index: 19;
+  }
+  
+  .popupContent {
+      height: 100%;
+      padding: 20px;
+      display: flex;
+    flex-direction: column;
+  }
+  
+  .popupHeader {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+  .aiAvatar {
+    width: 40px;
+    height: 40px;
+    margin-right: 10px;
+    border-radius: 50%;
+  }
+  
+  .popupHeader h2 {
+      margin: 0;
+    font-size: 16px;
+  }
+  
+  .closeButton {
+    background: none;
+    border: none;
+    color: #888;
+    font-size: 20px;
+    cursor: pointer;
+    margin-left: auto;
+  }
+  
+  .chatContainer {
+    flex-grow: 1;
+    overflow-y: auto;
+    margin-bottom: 20px;
+    max-height: 50vh;
+    min-height: 200px;
+  }
+  
+  .message {
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 5px;
+    max-width: 80%;
+  }
+  
+  .user {
+    background-color: #2b2b2b;
+    align-self: flex-end;
+    margin-left: auto;
+  }
+  
+  .ai {
+    background-color: #3a3a3a;
+    align-self: flex-start;
+  }
+  
+  .actionButtons {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+  }
+  
+  .actionButton {
+    background: none;
+    border: 1px solid #4a90e2;
+    color: #4a90e2;
+    padding: 5px 10px;
+    border-radius: 15px;
+    cursor: pointer;
+  }
+  
+  .suggestedActions {
+      margin-bottom: 20px;
+    display: flex;
+  }
+  
+  .inputForm {
+    display: flex;
+    border: 1px solid #444;
+    border-radius: 20px;
+    overflow: hidden;
+  }
+  
+  .input {
+      background: none;
+      border: none;
+      color: white;
+      padding: 10px 15px;
+      font-size: 14px;
+      flex-grow: 1;
+  }
+  
+  .input::placeholder {
+    color: #888;
+  }
+  .input:focus {
+    outline: none;
+  }
+  
+  .sendButton {
+      color: #4a90e2;
+      cursor: pointer;
+    background: none;
+    border: none;
+    padding: 10px 15px;
+  }
+  
+  .sendButton:disabled {
+      color: #888;
+      cursor: not-allowed;
+  }

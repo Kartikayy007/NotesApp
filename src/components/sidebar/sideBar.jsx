@@ -1,19 +1,33 @@
 import React, { useState } from "react";
 import Styles from "./sideBar.module.css";
 
-const SideBar = ({ notes, setNotes, newnote, deleteNote, active, setactive, selectedTag, setSelectedTag, searching, searchingNote,colortag }) => {
+const SideBar = ({
+  notes,
+  setNotes,
+  newnote,
+  deleteNote,
+  active,
+  setactive,
+  selectedTag,
+  setSelectedTag,
+  searching,
+  searchingNote,
+  colortag,
+}) => {
   const hour = new Date().getHours();
   let greeting;
   if (hour < 12) {
     greeting = "Good Morning 🌅";
   } else if (hour < 18) {
     greeting = "Good Afternoon ☀️";
+  } else if (hour >= 19 || hour < 6) {
+    greeting = "Good Evening 🌙";
   } else {
     greeting = "Good Evening 🌇";
   }
 
   const [editNoteID, editingNoteID] = useState("");
-  
+
   const colortags = {
     "": "gray",
     red: "red",
@@ -25,7 +39,9 @@ const SideBar = ({ notes, setNotes, newnote, deleteNote, active, setactive, sele
 
   const filteredNotes = notes.filter(
     (note) =>
-      (note.tag === selectedTag || selectedTag === "" || (selectedTag === "none" && note.tag === "")) &&
+      (note.tag === selectedTag ||
+        selectedTag === "" ||
+        (selectedTag === "none" && note.tag === "")) &&
       note.title.toLowerCase().indexOf(searching.toLowerCase()) !== -1
   );
 
@@ -34,19 +50,22 @@ const SideBar = ({ notes, setNotes, newnote, deleteNote, active, setactive, sele
   };
 
   const editNoteName = (id, name) => {
-    const updatedNotes = notes.map((note) => 
-      note.id === id ? {...note, title: name} : note
+    const updatedNotes = notes.map((note) =>
+      note.id === id ? { ...note, title: name } : note
     );
     setNotes(updatedNotes);
-    
+
     if (active && active.id === id) {
-      setactive({...active, title: name});
+      setactive({ ...active, title: name });
     }
   };
 
-
   const finishEditing = () => {
     editingNoteID("");
+  };
+
+  const homeClick = () => {
+    setactive(''); 
   };
 
   return (
@@ -70,7 +89,7 @@ const SideBar = ({ notes, setNotes, newnote, deleteNote, active, setactive, sele
       </div>
 
       <div className={Styles.buttonContainer}>
-        <button className={Styles.sideBarButton}>
+        <button className={Styles.sideBarButton} onClick={homeClick}>
           <img src="src/assets/home.svg" alt="" />
           Home
         </button>
@@ -79,7 +98,7 @@ const SideBar = ({ notes, setNotes, newnote, deleteNote, active, setactive, sele
           Add Note
         </button>
       </div>
-      
+
       <div className={Styles.tagFilter}>
         <select
           className={Styles.sortcolor}
@@ -102,21 +121,18 @@ const SideBar = ({ notes, setNotes, newnote, deleteNote, active, setactive, sele
               active && active.id === note.id ? Styles.focusedNote : ""
             }`}
           >
-            <div
-              className={Styles.noteContent}
-              onClick={() => setactive(note)}
-            >
+            <div className={Styles.noteContent} onClick={() => setactive(note)}>
               <div className={Styles.tagOptions}>
                 <button
                   className={Styles.tagButton}
-                  style={{backgroundColor: colortags[note.tag]}}
+                  style={{ backgroundColor: colortags[note.tag] }}
                 ></button>
                 <div className={Styles.tagMenu}>
-                  {Object.entries(colortags).map(([color, value]) => (
+                  {Object.keys(colortags).map((color) => (
                     <button
                       key={color}
                       className={Styles.tagOption}
-                      style={{backgroundColor: value}}
+                      style={{ backgroundColor: colortags[color] }}
                       onClick={(e) => {
                         e.stopPropagation();
                         colortag(note.id, color);
