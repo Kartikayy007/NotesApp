@@ -1,33 +1,15 @@
 .sideBar {
-  width: 300px; /* Increased width */
+  width: 300px;
   height: 100vh;
   background-color: rgb(25, 25, 25);
   color: rgb(213, 213, 213);
   display: flex;
   flex-direction: column;
-  padding: 3rem;
+  padding: 2rem;
   box-shadow: 2px 0 5px rgba(0, 0, 0, 0.7);
   position: fixed;
   left: 0;
   top: 0;
-  transition: transform 0.3s ease;
-}
-
-.open {
-  transform: translateX(0);
-}
-
-.closed {
-  transform: translateX(-100%);
-}
-
-.hamburger {
-  font-size: 2.5em; 
-  cursor: pointer;
-  position: fixed;
-  top: 4.5%;
-  left: 85%;
-  z-index: 9;
 }
 
 .greeting {
@@ -35,44 +17,43 @@
 }
 
 .greeting h1 {
-  font-size: 2em; 
+  font-size: 2em;
   font-weight: bold;
   margin: 0;
-}
-
-.createNotes {
-  list-style-type: none;
-  padding: 0;
 }
 
 .searchContainer {
   display: flex;
   align-items: center;
-  margin-bottom: 1px;
+  margin-bottom: 1rem;
+  border-radius: 7px;
+  transition: background-color 0.3s ease;
+  background-color: rgb(40, 40, 40);
 }
 
-.searchInput:hover {
-  background-color: #333;
-  border-radius: 7px;
+.searchContainer:hover {
+  background-color: rgb(50, 50, 50);
 }
+
 .searchInput {
   width: 100%;
-  padding: 15px; 
+  padding: 15px;
   border: none;
   background: none;
   border-radius: 7px;
   outline: none;
   color: rgb(213, 213, 213);
-  font-size: 1.7em;
-  font-weight: bold;
+  font-size: 1.2em;
 }
 
-.home, .addNote {
+.buttonContainer {
   display: flex;
-  align-items: center;
-  margin-bottom: 1px;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 1rem;
 }
-.homeButton, .addButton {
+
+.sideBarButton {
   display: flex;
   align-items: center;
   padding: 15px;
@@ -80,23 +61,169 @@
   border: none;
   border-radius: 7px;
   cursor: pointer;
-  font-size: 1.7em; 
+  font-size: 1.2em;
   font-weight: bold;
-  margin-bottom: 1  px; 
-  width: 100%;
-  background-color: rgb(25, 25, 25);
-  transition: background-color 0.3s ease, color 0.3s ease; 
+  background-color: rgb(40, 40, 40);
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-.homeButton:hover, .addButton:hover {
-  background-color: rgb(50, 50, 50); 
-  color: rgb(255, 255, 255); 
+.sideBarButton:hover {
+  background-color: rgb(60, 60, 60);
+}
+
+.sideBarButton img {
+  margin-right: 10px;
+}
+
+.tagFilter {
+  margin-bottom: 1rem;
 }
 
 .sortcolor {
   width: 100%;
-  padding: 15px; 
-  border: 1px solid #ccc;
-  border-radius: 4px;
+  padding: 15px;
+  border: none;
+  background-color: rgb(40, 40, 40);
+  border-radius: 7px;
   outline: none;
+  transition: background-color 0.3s ease;
+  color: rgb(213, 213, 213);
+  font-size: 1.2em;
+}
+
+.sortcolor:hover {
+  background-color: rgb(60, 60, 60);
+}
+
+.noteList {
+  overflow-y: auto;
+  max-height: calc(100vh - 300px);
+  padding-right: 10px;
+  padding-bottom: 2rem; /* Add this line */
+}
+
+.noteItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+  padding: 15px;
+  background-color: rgb(40, 40, 40);
+  border-radius: 7px;
+  transition: background-color 0.3s ease;
+}
+
+.noteItem:hover {
+  background-color: rgb(60, 60, 60);
+}
+
+.noteContent {
+  display: flex;
+  align-items: center;
+  flex-grow: 1;
+}
+
+.tagOptions {
+  position: relative;
+  margin-right: 10px;
+}
+
+.tagButton {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+}
+
+.tagMenu {
+  position: absolute;
+  left: 0;
+  top: 100%;
+  background-color: rgb(50, 50, 50);
+  border-radius: 5px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  display: none;
+  padding: 5px;
+  z-index: 1;
+}
+
+.tagOptions:hover .tagMenu {
+  display: flex;
+}
+
+.tagOption {
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  border: none;
+  margin: 0 2px;
+  cursor: pointer;
+}
+
+.noteTitle {
+  font-size: 1.2em;
+  color: rgb(213, 213, 213);
+}
+
+.noteOptions {
+  position: relative;
+  z-index: 1;
+}
+
+.optionsButton {
+  background: none;
+  border: none;
+  color: rgb(213, 213, 213);
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.optionsMenu {
+  position: absolute;
+  right: 0;
+  top: 100%;
+  background-color: rgb(50, 50, 50);
+  border-radius: 5px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  display: none;
+  z-index: 1;
+}
+
+.noteOptions:hover .optionsMenu {
+  display: block;
+}
+
+.optionsMenu button {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  text-align: left;
+  background: none;
+  border: none;
+  color: rgb(213, 213, 213);
+  cursor: pointer;
+}
+
+.optionsMenu button:hover {
+  background-color: rgb(70, 70, 70);
+}
+
+.editNoteIDInput {
+  flex-grow: 1;
+  padding: 10px;
+  background-color: rgb(60, 60, 60);
+  color: rgb(213, 213, 213);
+  border: none;
+  border-radius: 5px;
+  font-size: 1.2em;
+}
+
+.editNoteIDInput:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgb(100, 100, 100);
+}
+
+.focusedNote {
+  border: 2px solid rgb(100, 100, 100);
 }
