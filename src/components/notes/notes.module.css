@@ -13,8 +13,7 @@
   }
   
   .noteTitle {
-
-    width: 96.4%;    
+    width: 96.4%;
     padding: 10px;
     font-size: 24px;
     background-color: #2d2d2d;
@@ -49,3 +48,9 @@
     color: #d4d4d4;
   }
 
+  @media (max-width: 768px) {
+    .noteTitle {
+      margin-left: 55px; 
+      width: 82%;
+    }
+  }

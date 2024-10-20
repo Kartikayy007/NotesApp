@@ -27,6 +27,7 @@ const SideBar = ({
   }
 
   const [editNoteID, editingNoteID] = useState("");
+  
 
   const colortags = {
     "": "gray",
