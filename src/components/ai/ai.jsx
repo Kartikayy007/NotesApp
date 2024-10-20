@@ -56,13 +56,13 @@ function AI() {
   return (
     <>
       <button className={Styles.AiButton} onClick={toggleChat}>
-        <img src="src/assets/AI.svg" alt="AI Chat" />
+        <img src="public/assets/AI.svg" alt="AI Chat" />
       </button>
       {chatOpen && (
         <div className={Styles.popup}>
           <div className={Styles.popupContent}>
             <div className={Styles.popupHeader}>
-              <img src="src/assets/AI.svg" alt="AI Avatar" className={Styles.aiAvatar} />
+              <img src="public/assets/AI.svg" alt="AI Avatar" className={Styles.aiAvatar} />
               <h2>Hey there! What can I do for you?</h2>
               <button className={Styles.closeButton} onClick={toggleChat}>×</button>
             </div>
