@@ -75,7 +75,7 @@ const SideBar = ({
       </div>
       <div className={Styles.searchContainer}>
         <img
-          src="public/assets/search.svg"
+          src="/assets/search.svg"
           alt="Search Icon"
           className={Styles.searchIcon}
         />
@@ -90,11 +90,11 @@ const SideBar = ({
 
       <div className={Styles.buttonContainer}>
         <button className={Styles.sideBarButton} onClick={homeClick}>
-          <img src="public/assets/home.svg" alt="" />
+          <img src="/assets/home.svg" alt="" />
           Home
         </button>
         <button className={Styles.sideBarButton} onClick={newnote}>
-          <img src="public/assets/addNote.svg" alt="" />
+          <img src="/assets/addNote.svg" alt="" />
           Add Note
         </button>
       </div>
