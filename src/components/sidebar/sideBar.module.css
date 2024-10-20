@@ -115,8 +115,7 @@
   background-color: rgb(40, 40, 40);
   border-radius: 7px;
   transition: background-color 0.3s ease;
-  cursor: pointer;
-
+  cursor: pointer; 
 }
 
 .noteItem:hover {

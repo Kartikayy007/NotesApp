@@ -27,8 +27,6 @@ const SideBar = ({
   }
 
   const [editNoteID, editingNoteID] = useState("");
-  
-
   const colortags = {
     "": "gray",
     red: "red",
@@ -52,7 +50,7 @@ const SideBar = ({
 
   const editNoteName = (id, name) => {
     const updatedNotes = notes.map((note) =>
-      note.id === id ? {...note, title: name} : note
+      note.id === id ? { ...note, title: name } : note
     );
     setNotes(updatedNotes);
 
@@ -69,124 +67,133 @@ const SideBar = ({
     setactive("");
   };
 
+  const textLghtReduce = (text, maxLength) => {
+    if (text.length > maxLength) {
+      return text.substring(0, maxLength) + "...";
+    }
+    return text;
+  };
+
   return (
     <>
-  <input type="checkbox" id="hamburger" className={Styles.hamburger} />
-  <label htmlFor="hamburger" className={Styles.hamburger}></label>
-    <div className={Styles.sideBar}>
-      <div className={Styles.greeting}>
-        <h1>{greeting}</h1>
-      </div>
-      <div className={Styles.searchContainer}>
-        <img
-          src="/assets/search.svg"
-          alt="Search Icon"
-          className={Styles.searchIcon}
-        />
-        <input
-          type="text"
-          placeholder="Search notes..."
-          className={Styles.searchInput}
-          value={searching}
-          onChange={(e) => searchingNote(e.target.value)}
-        ></input>
-      </div>
+      <input type="checkbox" id="hamburger" className={Styles.hamburger} />
+      <label htmlFor="hamburger" className={Styles.hamburger}></label>
+      <div className={Styles.sideBar}>
+        <div className={Styles.greeting}>
+          <h1>{greeting}</h1>
+        </div>
+        <div className={Styles.searchContainer}>
+          <img
+            src="/assets/search.svg"
+            alt="Search Icon"
+            className={Styles.searchIcon}
+          />
+          <input
+            type="text"
+            placeholder="Search notes..."
+            className={Styles.searchInput}
+            value={searching}
+            onChange={(e) => searchingNote(e.target.value)}
+          ></input>
+        </div>
 
-      <div className={Styles.buttonContainer}>
-        <button className={Styles.sideBarButton} onClick={homeClick}>
-          <img src="/assets/home.svg" alt="" />
-          Home
-        </button>
-        <button className={Styles.sideBarButton} onClick={newnote}>
-          <img src="/assets/addNote.svg" alt="" />
-          Add Note
-        </button>
-      </div>
+        <div className={Styles.buttonContainer}>
+          <button className={Styles.sideBarButton} onClick={homeClick}>
+            <img src="/assets/home.svg" alt="" />
+            Home
+          </button>
+          <button className={Styles.sideBarButton} onClick={newnote}>
+            <img src="/assets/addNote.svg" alt="" />
+            Add Note
+          </button>
+        </div>
 
-      <div className={Styles.tagFilter}>
-        <select
-          className={Styles.sortcolor}
-          value={selectedTag}
-          onChange={(e) => setSelectedTag(e.target.value)}
-        >
-          <option value="">🔘 All</option>
-          <option value="red">🔴 Red</option>
-          <option value="yellow">🟡 Yellow</option>
-          <option value="green">🟢 Green</option>
-          <option value="blue">🔵 Blue</option>
-          <option value="purple">🟣 Purple</option>
-        </select>
-      </div>
-      <div className={Styles.noteList}>
-        {filteredNotes.map((note) => (
-          <div
-            key={note.id}
-            className={`${Styles.noteItem} ${
-              active && active.id === note.id ? Styles.focusedNote : ""
-            }`}
+        <div className={Styles.tagFilter}>
+          <select
+            className={Styles.sortcolor}
+            value={selectedTag}
+            onChange={(e) => setSelectedTag(e.target.value)}
           >
-            <div className={Styles.noteContent} onClick={() => setactive(note)}>
-              <div className={Styles.tagOptions}>
-                <button
-                  className={Styles.tagButton}
-                  style={{backgroundColor: colortags[note.tag]}}
-                ></button>
-                <div className={Styles.tagMenu}>
-                  {Object.keys(colortags).map((color) => (
-                    <button
-                      key={color}
-                      className={Styles.tagOption}
-                      style={{backgroundColor: colortags[color]}}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        colortag(note.id, color);
-                      }}
-                    ></button>
-                  ))}
+            <option value="">🔘 All</option>
+            <option value="red">🔴 Red</option>
+            <option value="yellow">🟡 Yellow</option>
+            <option value="green">🟢 Green</option>
+            <option value="blue">🔵 Blue</option>
+            <option value="purple">🟣 Purple</option>
+          </select>
+        </div>
+        <div className={Styles.noteList}>
+          {filteredNotes.map((note) => (
+            <div
+              key={note.id}
+              className={`${Styles.noteItem} ${
+                active && active.id === note.id ? Styles.focusedNote : ""
+              }`}
+            >
+              <div className={Styles.noteContent} onClick={() => setactive(note)}>
+                <div className={Styles.tagOptions}>
+                  <button
+                    className={Styles.tagButton}
+                    style={{ backgroundColor: colortags[note.tag] }}
+                  ></button>
+                  <div className={Styles.tagMenu}>
+                    {Object.keys(colortags).map((color) => (
+                      <button
+                        key={color}
+                        className={Styles.tagOption}
+                        style={{ backgroundColor: colortags[color] }}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          colortag(note.id, color);
+                        }}
+                      ></button>
+                    ))}
+                  </div>
+                </div>
+                {editNoteID === note.id ? (
+                  <input
+                    type="text"
+                    value={note.title}
+                    onChange={(e) => editNoteName(note.id, textLghtReduce(e.target.value, 15))}
+                    onBlur={finishEditing}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        finishEditing();
+                      }
+                    }}
+                    className={Styles.editNoteIDInput}
+                  />
+                ) : (
+                  <span className={Styles.noteTitle} title={note.title}>
+                    {note.title.length > 15 ? `${note.title.substring(0, 15)}...` : note.title}
+                  </span>
+                )}
+              </div>
+              <div className={Styles.noteOptions}>
+                <button className={Styles.optionsButton}>⋮</button>
+                <div className={Styles.optionsMenu}>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      editingNoteName(note.id);
+                    }}
+                  >
+                    Rename
+                  </button>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      deleteNote(note.id);
+                    }}
+                  >
+                    Delete
+                  </button>
                 </div>
               </div>
-              {editNoteID === note.id ? (
-                <input
-                  type="text"
-                  value={note.title}
-                  onChange={(e) => editNoteName(note.id, e.target.value)}
-                  onBlur={finishEditing}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") {
-                      finishEditing();
-                    }
-                  }}
-                  className={Styles.editNoteIDInput}
-                />
-              ) : (
-                <span className={Styles.noteTitle}>{note.title}</span>
-              )}
             </div>
-            <div className={Styles.noteOptions}>
-              <button className={Styles.optionsButton}>⋮</button>
-              <div className={Styles.optionsMenu}>
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    editingNoteName(note.id);
-                  }}
-                >
-                  Rename
-                </button>
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    deleteNote(note.id);
-                  }}
-                >
-                  Delete
-                </button>
-              </div>
-            </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
-    </div>
     </>
   );
 };
