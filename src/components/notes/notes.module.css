@@ -1,0 +1,50 @@
+.notesContainer {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+    padding: 20px;
+    background-color: #1e1e1e;
+    color: #d4d4d4;
+  }
+  
+  .noteHeader {
+    margin-bottom: 20px;
+  }
+  
+  .noteTitle {
+    width: 98.4%;
+    padding: 10px;
+    font-size: 24px;
+    background-color: #2d2d2d;
+    color: #d4d4d4;
+    border: none;
+    border-radius: 5px;
+    outline: none;
+
+  }
+  
+  .noteContent {
+    height:85%;
+    width: 98.4%;
+    padding: 10px;
+    font-size: 16px;
+    background-color: #2d2d2d;
+    color: #d4d4d4;
+    border: none;
+    border-radius: 5px;
+    resize: none;
+    outline: none;
+  }
+  
+  .noactive {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+    font-size: 24px;
+    background-color: #1e1e1e;
+    color: #d4d4d4;
+  }
+
