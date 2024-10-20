@@ -16,12 +16,12 @@
   .AiButton:hover {
     background: linear-gradient(
       90deg,
-      black 20%,
-      yellow 25%,
-      red 45%,
-      purple 55%,
-      blue 65%,
-      black 80%
+      rgba(0, 0, 0, 1) 20%,
+      rgba(255, 255, 0, 0.3) 25%,
+      rgba(255, 0, 0, 0.3) 45%,
+      rgba(128, 0, 128, 0.3) 55%,
+      rgba(0, 0, 255, 0.3) 65%,
+      rgba(0, 0, 0, 1) 80%
     );
     background-position: 0;
     background-size: 900%;
@@ -104,6 +104,21 @@
     padding: 10px;
     border-radius: 5px;
     max-width: 80%;
+    animation: message 0.3s ease-in;
+    word-wrap: break-word; 
+    overflow-wrap: break-word;
+    
+  }
+
+  @keyframes message {
+    0% {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
   
   .user {

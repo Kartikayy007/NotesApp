@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, {useState} from "react";
 import Styles from "./sideBar.module.css";
 
 const SideBar = ({
@@ -51,12 +51,12 @@ const SideBar = ({
 
   const editNoteName = (id, name) => {
     const updatedNotes = notes.map((note) =>
-      note.id === id ? { ...note, title: name } : note
+      note.id === id ? {...note, title: name} : note
     );
     setNotes(updatedNotes);
 
     if (active && active.id === id) {
-      setactive({ ...active, title: name });
+      setactive({...active, title: name});
     }
   };
 
@@ -65,10 +65,13 @@ const SideBar = ({
   };
 
   const homeClick = () => {
-    setactive(''); 
+    setactive("");
   };
 
   return (
+    <>
+  <input type="checkbox" id="hamburger" className={Styles.hamburger} />
+  <label htmlFor="hamburger" className={Styles.hamburger}></label>
     <div className={Styles.sideBar}>
       <div className={Styles.greeting}>
         <h1>{greeting}</h1>
@@ -125,14 +128,14 @@ const SideBar = ({
               <div className={Styles.tagOptions}>
                 <button
                   className={Styles.tagButton}
-                  style={{ backgroundColor: colortags[note.tag] }}
+                  style={{backgroundColor: colortags[note.tag]}}
                 ></button>
                 <div className={Styles.tagMenu}>
                   {Object.keys(colortags).map((color) => (
                     <button
                       key={color}
                       className={Styles.tagOption}
-                      style={{ backgroundColor: colortags[color] }}
+                      style={{backgroundColor: colortags[color]}}
                       onClick={(e) => {
                         e.stopPropagation();
                         colortag(note.id, color);
@@ -183,6 +186,7 @@ const SideBar = ({
         ))}
       </div>
     </div>
+    </>
   );
 };
 

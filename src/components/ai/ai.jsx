@@ -13,7 +13,9 @@ function AI() {
   }
 
   function fixAIResponse(answer) {
-    answer = answer.replace(/\*\*\*\*\*/g, '');
+    answer = answer.replace(/\*\*/g, '');
+    answer = answer.replace(/##/g, '');
+    answer = answer.replace(/\*/g, '');
     answer = answer.replace(/^\s*[\r\n]/gm, '');
     answer = answer.replace(/\n{3,}/g, '\n\n');
     return answer.trim();
