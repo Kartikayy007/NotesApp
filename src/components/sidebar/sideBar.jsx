@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import Styles from "./sideBar.module.css";
 
 const SideBar = ({
@@ -27,6 +27,7 @@ const SideBar = ({
   }
 
   const [editNoteID, editingNoteID] = useState("");
+
   const colortags = {
     "": "gray",
     red: "red",
@@ -55,7 +56,7 @@ const SideBar = ({
     setNotes(updatedNotes);
 
     if (active && active.id === id) {
-      setactive({...active, title: name});
+      setactive({ ...active, title: name });
     }
   };
 
@@ -102,7 +103,13 @@ const SideBar = ({
             <img src="/assets/home.svg" alt="" />
             Home
           </button>
-          <button className={Styles.sideBarButton} onClick={newnote}>
+          <button
+            className={Styles.sideBarButton}
+            onClick={(e) => {
+              e.preventDefault();
+              newnote();
+            }}
+          >
             <img src="/assets/addNote.svg" alt="" />
             Add Note
           </button>
@@ -112,7 +119,10 @@ const SideBar = ({
           <select
             className={Styles.sortcolor}
             value={selectedTag}
-            onChange={(e) => setSelectedTag(e.target.value)}
+            onChange={(e) => {
+              e.preventDefault();
+              setSelectedTag(e.target.value);
+            }}
           >
             <option value="">🔘 All</option>
             <option value="red">🔴 Red</option>
@@ -143,6 +153,7 @@ const SideBar = ({
                         className={Styles.tagOption}
                         style={{ backgroundColor: colortags[color] }}
                         onClick={(e) => {
+                          e.preventDefault();
                           e.stopPropagation();
                           colortag(note.id, color);
                         }}
@@ -170,25 +181,26 @@ const SideBar = ({
                 )}
               </div>
               <div className={Styles.noteOptions}>
-                <button className={Styles.optionsButton}>⋮</button>
-                <div className={Styles.optionsMenu}>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      editingNoteName(note.id);
-                    }}
-                  >
-                    Rename
-                  </button>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      deleteNote(note.id);
-                    }}
-                  >
-                    Delete
-                  </button>
-                </div>
+                <button
+                  className={Styles.optionsButton}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    editingNoteName(note.id);
+                  }}
+                >
+                  Rename
+                </button>
+                <button
+                  className={Styles.optionsButton}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    deleteNote(note.id);
+                  }}
+                >
+                  Delete
+                </button>
               </div>
             </div>
           ))}
