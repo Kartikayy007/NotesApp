@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './App.css';
 import SideBar from './components/sidebar/sideBar';
 import Notes from './components/notes/notes';
@@ -6,10 +6,20 @@ import AI from './components/ai/ai';
 
 const App = () => {
   const [notes, setNotes] = useState([]);
-  const [active, setactive] = useState(null);
+  const [active, setactive] = useState('');
   const [selectedTag, setSelectedTag] = useState("");
   const [searching, searchingNote] = useState("");
-  
+
+  useEffect(() => {
+    const savenotes = localStorage.getItem('notes');
+    if (savenotes) {
+      setNotes(JSON.parse(savenotes));
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem('notes', JSON.stringify(notes));
+  }, [notes]);
 
   const newnote = () => {
     const newNote = {
