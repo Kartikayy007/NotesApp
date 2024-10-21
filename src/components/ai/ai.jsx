@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import Styles from './ai.module.css';
 import axios from 'axios';
+import { marked } from 'marked';
 
 function AI() {
   const [chatOpen, setChatOpen] = useState(false);
@@ -10,15 +11,6 @@ function AI() {
 
   function toggleChat() {
     setChatOpen(!chatOpen);
-  }
-
-  function fixAIResponse(answer) {
-    answer = answer.replace(/\*\*/g, '');
-    answer = answer.replace(/##/g, '');
-    answer = answer.replace(/\*/g, '');
-    answer = answer.replace(/^\s*[\r\n]/gm, '');
-    answer = answer.replace(/\n{3,}/g, '\n\n');
-    return answer.trim();
   }
 
   async function sendMessage(e) {
@@ -41,8 +33,8 @@ function AI() {
         }
       });
       let aiAnswer = aiReply.data.candidates[0].content.parts[0].text;
-      let cleanAnswer = fixAIResponse(aiAnswer);
-      setChatHistory([...chatHistory, { who: 'user', text: userMessage }, { who: 'ai', text: cleanAnswer }]);
+      let parsedAiAnswer = marked(aiAnswer);
+      setChatHistory([...chatHistory, { who: 'user', text: userMessage }, { who: 'ai', text: parsedAiAnswer }]);
     } catch (error) {
       setChatHistory([...chatHistory, { who: 'user', text: userMessage }, { who: 'ai', text: "Oops, something went wrong. Try again!" }]);
     } finally {
@@ -70,9 +62,7 @@ function AI() {
             </div>
             <div className={Styles.chatContainer}>
               {chatHistory.map((msg, i) => (
-                <div key={i} className={`${Styles.message} ${Styles[msg.who]}`}>
-                  {msg.text}
-                </div>
+                <div key={i} className={`${Styles.message} ${Styles[msg.who]}`} dangerouslySetInnerHTML={{ __html: msg.text }} />
               ))}
               {waiting && <div className={Styles.message}>AI is thinking...</div>}
             </div>
