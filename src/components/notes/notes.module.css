@@ -21,6 +21,7 @@
   border: none;
   border-radius: 5px;
   outline: none;
+  font-weight: bold;
 }
 
 .noactive {
@@ -52,4 +53,44 @@
     margin-left: 55px; 
     width: 82%;
   }
+  .saveButton {
+    top: 14.1% !important;
+    right: 8% !important;
+  }
 }
+
+@media (max-width: 375px) {
+  .saveButton {
+    top: 23.1% !important;
+  }
+  .noteContents {
+    height: 69%;
+  }
+}
+@media (max-width: 1812px) and (max-height: 2176px) {
+  .noteTitle {
+    width: 74%;
+  }
+}
+
+.saveButton {
+  position: absolute;
+  top: 12.7%;
+  right: 4%;
+  padding: 5px 10px;
+  margin-left: 10px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.saveButton:disabled {
+  background-color: gray;
+  cursor: not-allowed;
+}
+
+.saveButton.active {
+  background-color: #45a049;
+} 

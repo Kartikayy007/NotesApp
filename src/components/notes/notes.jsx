@@ -6,31 +6,37 @@ import ReactQuill from 'react-quill';
 const Notes = ({ active, updateNote }) => {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
+  const [isEdited, editied] = useState(false);
 
   useEffect(() => {
     if (active) {
       setTitle(active.title);
       setContent(active.content);
+      editied(false);
     } else {
       setTitle('');
       setContent('');
+      editied(false);
     }
   }, [active]);
 
-  const titleChange = (e) => {
+  const changetitle = (e) => {
     setTitle(e.target.value);
-    updateNote({
-      ...active,
-      title: e.target.value,
-    });
+    editied(true);
   };
 
   const notecontent = (value) => {
     setContent(value);
+    editied(true);
+  };
+
+  const savenotes = () => {
     updateNote({
       ...active,
-      content: value,
+      title: title,
+      content: content,
     });
+    editied(false);
   };
 
   const modules = {
@@ -68,10 +74,17 @@ const Notes = ({ active, updateNote }) => {
           <input
             type="text"
             value={title}
-            onChange={titleChange}
+            onChange={changetitle}
             placeholder="Note Title"
             className={Styles.noteTitle}
           />
+          <button 
+            onClick={savenotes}
+            className={`${Styles.saveButton} ${isEdited ? Styles.active : ''}`}
+            disabled={!isEdited}
+          >
+            {isEdited ? 'Save' : 'Saved'}
+          </button>
         </div>
         <ReactQuill
           modules={modules}

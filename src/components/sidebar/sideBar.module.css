@@ -116,6 +116,7 @@
   border-radius: 7px;
   transition: background-color 0.3s ease;
   cursor: pointer; 
+  font-weight: bold;
 }
 
 .noteItem:hover {
@@ -300,5 +301,12 @@
 
   .hamburger:checked::before {
     content: '×';
+  }
+}
+
+@media (max-width: 375px) {
+  .greeting {
+    font-size: 0.8em !important;
+    margin-bottom: 10px !important;
   }
 }
