@@ -5,17 +5,14 @@ import Notes from './components/notes/notes';
 import AI from './components/ai/ai';
 
 const App = () => {
-  const [notes, setNotes] = useState([]);
   const [active, setactive] = useState('');
   const [selectedTag, setSelectedTag] = useState("");
   const [searching, searchingNote] = useState("");
-
-  useEffect(() => {
-    const savenotes = localStorage.getItem('notes');
-    if (savenotes) {
-      setNotes(JSON.parse(savenotes));
-    }
-  }, []);
+  
+  const [notes, setNotes] = useState(() => {
+    const savedNotes = localStorage.getItem('notes');
+    return savedNotes ? JSON.parse(savedNotes) : [];
+  });
 
   useEffect(() => {
     localStorage.setItem('notes', JSON.stringify(notes));
