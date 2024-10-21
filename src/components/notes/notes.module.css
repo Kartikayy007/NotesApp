@@ -51,7 +51,7 @@
 @media (max-width: 768px) {
   .noteTitle {
     margin-left: 55px; 
-    width: 82%;
+    width: 74%;
   }
   .saveButton {
     top: 14.1% !important;
@@ -65,11 +65,6 @@
   }
   .noteContents {
     height: 69%;
-  }
-}
-@media (max-width: 1812px) and (max-height: 2176px) {
-  .noteTitle {
-    width: 74%;
   }
 }
 
