@@ -17,11 +17,19 @@ const Notes = ({ active, updateNote }) => {
     }
   }, [active]);
 
-  const handleTitleChange = (e) => {
+  const titleChange = (e) => {
     setTitle(e.target.value);
     updateNote({
       ...active,
       title: e.target.value,
+    });
+  };
+
+  const notecontent = (value) => {
+    setContent(value);
+    updateNote({
+      ...active,
+      content: value,
     });
   };
 
@@ -60,7 +68,7 @@ const Notes = ({ active, updateNote }) => {
           <input
             type="text"
             value={title}
-            onChange={handleTitleChange}
+            onChange={titleChange}
             placeholder="Note Title"
             className={Styles.noteTitle}
           />
@@ -69,6 +77,7 @@ const Notes = ({ active, updateNote }) => {
           modules={modules}
           formats={formats}
           value={content}
+          onChange={notecontent}
           className={Styles.noteContents}
         />
       </div>
