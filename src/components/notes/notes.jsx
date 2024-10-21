@@ -74,7 +74,7 @@ const Notes = ({ active, updateNote }) => {
           <input
             type="text"
             value={title}
-            onChange={changetitle}
+            onCha   nge={changetitle}
             placeholder="Note Title"
             className={Styles.noteTitle}
           />

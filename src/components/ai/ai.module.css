@@ -129,7 +129,7 @@
   
   .ai {
     background-color: #3a3a3a;
-    align-self: flex-start;
+    /* align-self: flex-start; */
   }
   
   .actionButtons {
