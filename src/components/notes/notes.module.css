@@ -35,11 +35,11 @@
 }
 
 .noteContents {
-  height: 82%;
+  height: 80%;
   width: 96.4%;
   padding: 10px;
   font-size: 16px;
-  background-color: #2d2d2d;
+  /* background-color: #2d2d2d; */
   color: #d4d4d4;
   border: none;
   border-radius: 5px;
