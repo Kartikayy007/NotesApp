@@ -16,7 +16,7 @@ const SideBar = ({
   colortag,
 }) => {
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState('');
   const [editNoteID, editingNoteID] = useState("");
 
   useEffect(() => {
@@ -56,7 +56,6 @@ const SideBar = ({
     fetchNotes();
   }, [setNotes]);
   
-
   const createNewNote = async () => {  
     try {
       const sessionId = localStorage.getItem("sessionid");
@@ -89,7 +88,7 @@ const SideBar = ({
   const deletenote = async (note) => {
     try {
       const sessionId = localStorage.getItem("sessionid");
-      const response = await axios.delete(
+      await axios.delete(
         `https://notes-backend-x9sp.onrender.com/notes/${note._id}`,
         {
           headers: {
@@ -99,7 +98,13 @@ const SideBar = ({
           withCredentials: true,
         }
       );
-      console.log("Response for deleting note:", response.data);
+      
+      setNotes(prevNotes => prevNotes.filter(n => n._id !== note._id));
+      
+      if (active && active._id === note._id) {
+        setactive('');
+      }
+      
     } catch (err) {
       console.error("Error deleting note:", err);
       setError("Failed to delete note");
