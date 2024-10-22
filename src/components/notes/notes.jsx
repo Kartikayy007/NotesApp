@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Styles from './notes.module.css';
 import 'quill/dist/quill.snow.css';
 import ReactQuill from 'react-quill';
+import axios from 'axios';
 
 const Notes = ({ active, updateNote }) => {
   const [title, setTitle] = useState('');
@@ -11,7 +12,7 @@ const Notes = ({ active, updateNote }) => {
   useEffect(() => {
     if (active) {
       setTitle(active.title);
-      setContent(active.content);
+      setContent(active.decription);
       editied(false);
     } else {
       setTitle('');
@@ -38,6 +39,37 @@ const Notes = ({ active, updateNote }) => {
     });
     editied(false);
   };
+
+  const SaveNote = async () => {  
+    console.log(active)
+    try {
+      const sessionId = localStorage.getItem("sessionid");
+      console.log(content)
+      const response = await axios.put(`https://notes-backend-x9sp.onrender.com/notes/${active._id}`, 
+      {
+        title,
+        description: content,
+      }, {
+        headers: {
+          Authorization: `Bearer ${sessionId}`,
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        withCredentials: true
+      });
+  
+      console.log(response.data);
+  
+      if (response.data.success) {
+        console.log('Note saved');
+      } 
+      else {
+        console.error('Failed to save note');
+      }
+    } catch (error) {
+      console.error('Error saving note:', error);
+    }
+  }
 
   const modules = {
     toolbar: [
@@ -74,12 +106,12 @@ const Notes = ({ active, updateNote }) => {
           <input
             type="text"
             value={title}
-            onCha   nge={changetitle}
+            onChange={changetitle}
             placeholder="Note Title"
             className={Styles.noteTitle}
           />
           <button 
-            onClick={savenotes}
+            onClick={SaveNote}
             className={`${Styles.saveButton} ${isEdited ? Styles.active : ''}`}
             disabled={!isEdited}
           >

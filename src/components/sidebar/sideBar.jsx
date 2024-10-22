@@ -23,39 +23,88 @@ const SideBar = ({
     const fetchNotes = async () => {
       try {
         setIsLoading(true);
-        const sessionId = localStorage.getItem('sessionid');
+        const sessionId = localStorage.getItem("sessionid");
 
-        const response = await axios.get('https://notes-backend-x9sp.onrender.com/notes/', {
-          headers: {
-            'Authorization': `Bearer ${sessionId}`,
-            'Content-Type': 'application/json',
-            'Accept': 'application/json'
-          },
-          withCredentials: true 
-        });
-        console.log('Response:', response.data);
-        
-        setNotes(response.data);
-        console.log(notes);
-        
+        const response = await axios.get(
+          "https://notes-backend-x9sp.onrender.com/notes/",
+          {
+            headers: {
+              Authorization: `Bearer ${sessionId}`,
+              "Content-Type": "application/json",
+              Accept: "application/json",
+            },
+            withCredentials: true,
+          }
+        );
+        console.log("Response:", response.data);
+
+        setNotes(response.data.data || []);
         setIsLoading(false);
-
       } catch (err) {
-        console.error('Error fetching notes:', err);
+        console.error("Error fetching notes:", err);
         if (err.response?.status === 401) {
-          localStorage.removeItem('uuid');
-          console.log('Session expired. Redirecting to login page');
-          localStorage.removeItem('sessionid');
-          // window.location.href = '/user/login'; 
+          localStorage.removeItem("uuid");
+          console.log("Session expired. Redirecting to login page");
+          localStorage.removeItem("sessionid");
+          window.location.href = '/user/login'; 
         }
-        setError(err.message || 'Failed to fetch notes');
+        setError(err.message || "Failed to fetch notes");
         setIsLoading(false);
       }
     };
 
     fetchNotes();
   }, [setNotes]);
+  
 
+  const createNewNote = async () => {  
+    try {
+      const sessionId = localStorage.getItem("sessionid");
+  
+      const response = await axios.post(
+        "https://notes-backend-x9sp.onrender.com/notes",
+        {
+          title: "Untitled Note",
+          description: "enter note description",
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${sessionId}`,
+            "Content-Type": "application/json",
+          },
+          withCredentials: true,
+        }
+      );
+      console.log("Response for adding note:", response.data);
+      const newNote = response.data;
+      setNotes((prevNotes) => [...prevNotes, newNote]);
+      setactive(newNote);
+  
+    } catch (err) {
+      console.error("Error creating new note:", err);
+      setError("Failed to create note");
+    }
+  };
+
+  const deletenote = async (note) => {
+    try {
+      const sessionId = localStorage.getItem("sessionid");
+      const response = await axios.delete(
+        `https://notes-backend-x9sp.onrender.com/notes/${note._id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${sessionId}`,
+            "Content-Type": "application/json",
+          },
+          withCredentials: true,
+        }
+      );
+      console.log("Response for deleting note:", response.data);
+    } catch (err) {
+      console.error("Error deleting note:", err);
+      setError("Failed to delete note");
+    }
+  }
 
   const hour = new Date().getHours();
   let greeting;
@@ -64,7 +113,7 @@ const SideBar = ({
   } else if (hour < 18) {
     greeting = "Good Afternoon ☀️";
   } else if (hour >= 19 || hour < 6) {
-    greeting = "Good Evening 🌙";
+    greeting = "Good Evening 🌇";
   } else {
     greeting = "Good Evening 🌇";
   }
@@ -78,14 +127,6 @@ const SideBar = ({
     purple: "purple",
   };
 
-  // const filteredNotes = notes.filter(
-  //   (note) =>
-  //     (note.tag === selectedTag ||
-  //       selectedTag === "" ||
-  //       (selectedTag === "none" && note.tag === "")) &&
-  //     note.title.toLowerCase().indexOf(searching.toLowerCase()) !== -1
-  // );
-
   const editingNoteName = (id) => {
     editingNoteID(id);
   };
@@ -95,10 +136,9 @@ const SideBar = ({
       note.id === id ? { ...note, title: name } : note
     );
     setNotes(updatedNotes);
-    console.log(notes);
 
     if (active && active.id === id) {
-      setactive({...active, title: name});
+      setactive({ ...active, title: name });
     }
   };
 
@@ -121,7 +161,7 @@ const SideBar = ({
     return (
       <div className={Styles.sideBar}>
         <div className={Styles.greeting}>
-          <h1>Loading notes...</h1>
+          <div className={Styles.loader}></div>
         </div>
       </div>
     );
@@ -166,7 +206,7 @@ const SideBar = ({
             <img src="/assets/home.svg" alt="" />
             Home
           </button>
-          <button className={Styles.sideBarButton} onClick={newnote}>
+          <button className={Styles.sideBarButton} onClick={createNewNote}>
             <img src="/assets/addNote.svg" alt="" />
             Add Note
           </button>
@@ -187,76 +227,87 @@ const SideBar = ({
           </select>
         </div>
         <div className={Styles.noteList}>
-          (console.log(notes))
-          {notes.map((note) => (
-            <div
-              key={note.id}
-              className={`${Styles.noteItem} ${
-                active && active.id === note.id ? Styles.focusedNote : ""
-              }`}
-            >
-              <div className={Styles.noteContent} onClick={() => setactive(note)}>
-                <div className={Styles.tagOptions}>
-                  <button
-                    className={Styles.tagButton}
-                    style={{ backgroundColor: colortags[note.tag] }}
-                  ></button>
-                  <div className={Styles.tagMenu}>
-                    {Object.keys(colortags).map((color) => (
-                      <button
-                        key={color}
-                        className={Styles.tagOption}
-                        style={{ backgroundColor: colortags[color] }}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          colortag(note.id, color);
-                        }}
-                      ></button>
-                    ))}
+          {notes.length > 0 ? (
+            notes.map((note) => (
+              <div
+                key={note._id}
+                className={`${Styles.noteItem} ${
+                  active && active._id === note._id ? Styles.focusedNote : ""
+                }`}
+              >
+                <div
+                  className={Styles.noteContent}
+                  onClick={() => setactive(note)}
+                >
+                  <div className={Styles.tagOptions}>
+                    <button
+                      className={Styles.tagButton}
+                      style={{ backgroundColor: colortags[note.tag] }}
+                    ></button>
+                    <div className={Styles.tagMenu}>
+                      {Object.keys(colortags).map((color) => (
+                        <button
+                          key={color}
+                          className={Styles.tagOption}
+                          style={{ backgroundColor: colortags[color] }}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            colortag(note._id, color);
+                          }}
+                        ></button>
+                      ))}
+                    </div>
+                  </div>
+                  {editNoteID === note._id ? (
+                    <input
+                      type="text"
+                      value={note.title}
+                      onChange={(e) =>
+                        editNoteName(note._id, textLghtReduce(e.target.value, 15))
+                      }
+                      onBlur={finishEditing}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          finishEditing();
+                        }
+                      }}
+                      className={Styles.editNoteIDInput}
+                    />
+                  ) : (
+                    <span
+                      className={Styles.noteTitle}
+                      title={note.title}
+                    >
+                      {note.title}
+                    </span>
+                  )}
+                </div>
+                <div className={Styles.noteOptions}>
+                  <button className={Styles.optionsButton}>⋮</button>
+                  <div className={Styles.optionsMenu}>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        editingNoteName(note._id);
+                      }}
+                    >
+                      Rename
+                    </button>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        deletenote(note);
+                      }}
+                    >
+                      Delete
+                    </button>
                   </div>
                 </div>
-                {editNoteID === note.id ? (
-                  <input
-                    type="text"
-                    value={note.title}
-                    onChange={(e) => editNoteName(note.id, textLghtReduce(e.target.value, 15))}
-                    onBlur={finishEditing}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") {
-                        finishEditing();
-                      }
-                    }}
-                    className={Styles.editNoteIDInput}
-                  />
-                ) : (
-                  <span className={Styles.noteTitle} title={note.title}>
-                    {note.title.length > 15 ? `${note.title.substring(0, 15)}...` : note.title}
-                  </span>
-                )}
               </div>
-              <div className={Styles.noteOptions}>
-                <button className={Styles.optionsButton}>⋮</button>
-                <div className={Styles.optionsMenu}>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      editingNoteName(note.id);
-                    }}
-                  >
-                    Rename
-                  </button>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      deleteNote(note.id);
-                    }}
-                  >
-                    Delete
-                  </button>
-                </div>
-              </div>
-            </div>
-          ))}
+            ))
+          ) : (
+            <p className={Styles.noNotes}>No notes available</p>
+          )}
         </div>
       </div>
     </>

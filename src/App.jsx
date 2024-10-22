@@ -15,21 +15,21 @@ const App = () => {
 
 
   const newNote = () => {
+    if (!Array.isArray(notes)) {
+      setNotes([]);
+    }
+  
     const newNote = {
       id: Math.random(),
       title: `Note ${notes.length + 1}`,
       content: "",
       tag: "",
     };
-    setNotes([...notes, newNote]);
+  
+    setNotes((prevNotes) => [...(Array.isArray(prevNotes) ? prevNotes : []), newNote]);
   };
 
-  const deleteNote = (id) => {
-    setNotes(notes.filter((note) => note.id !== id));
-    if (active && active.id === id) {
-      setActive("");
-    }
-  };
+  
 
   const updateNote = (updatedNote) => {
     const updatedNotesArr = notes.map((note) =>
@@ -59,7 +59,6 @@ const App = () => {
                     notes={notes}
                     setNotes={setNotes}
                     newnote={newNote}
-                    deleteNote={deleteNote}
                     active={active}
                     setactive={setActive}
                     selectedTag={selectedTag}
