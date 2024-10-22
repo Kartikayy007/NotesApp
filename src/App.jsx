@@ -50,20 +50,16 @@ const App = () => {
     );
   };
 
-  const isAuthenticated = () => {
-    return localStorage.getItem('sessionId') !== null;
-  };
 
   return (
     <Router>
       <div className="App">
         <Routes>
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
+          <Route path="/user/signup" element={<Register />} />
+          <Route path="/user/login" element={<Login />} />
           <Route
-            path="/"
+            path="/notes"
             element={
-              isAuthenticated() ? (
                 <>
                   <SideBar
                     notes={notes}
@@ -81,9 +77,6 @@ const App = () => {
                   <AI />
                   <Notes className="notes" active={active} updateNote={updateNote} />
                 </>
-              ) : (
-                <Navigate to="/register" replace />
-              )
             }
           />
         </Routes>

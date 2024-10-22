@@ -10,31 +10,36 @@ const LoginPage = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
     setError('');
+
     try {
-      console.log('Attempting to log in with:', { email, password });
       const response = await axios.post('https://notes-backend-x9sp.onrender.com/user/login', {
         email,
         password
-      }, { withCredentials: true });
-      
-      console.log('Full API response:', response);
-      console.log('API response data:', response.data);
-      console.log('API response sessionId:', response.data.sessionId);
+      }, { 
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        }
+      });
 
-      if (response.data && response.data.success) {
-        localStorage.setItem('sessionId', response.data.sessionId);
-        console.log('Session ID:', response.data.sessionId);
-        window.location.href = '/';
-      } else if (response.data && response.data.error) {
-        setError(response.data.error);
+      console.log('Login response:', response.data);
+      
+      if (response.data && response.data.token) {
+        localStorage.setItem('token', response.data.token);
+        window.location.href = '/notes';
       } else {
-        setError('Login failed. Please try again.');
+        setError('Login failed: No token received');
       }
-    
-    } 
-    catch (err) {
+    } catch (err) {
       console.error('Error during login:', err);
-      setError(err.response?.data?.message || 'Invalid email or password');
+      
+      if (err.response) {
+        setError(err.response.data?.message || 'Invalid credentials');
+      } else if (err.request) {
+        setError('Network error. Please try again.');
+      } else {
+        setError('An error occurred. Please try again.');
+      }
     }
   };
 
@@ -49,6 +54,7 @@ const LoginPage = () => {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           className={Styles['login-input']}
+          required
         />
         <input
           type="password"
@@ -56,6 +62,7 @@ const LoginPage = () => {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           className={Styles['login-input']}
+          required
         />
         <button type="submit" className={Styles['login-btn']}>
           Login

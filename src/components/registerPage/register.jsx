@@ -16,22 +16,21 @@ const RegisterPage = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (formData.name && formData.email && formData.password) {
-      axios.post("https://notes-backend-x9sp.onrender.com/user/signup", formData)
-        .then((response) => {
-          console.log('Response:', response.data);
-          if (response.data.sessionId) {
-            localStorage.setItem('sessionId', response.data.sessionId);
-            console.log('Session ID:', response.data.sessionId);
-            navigate('/login'); 
-          }
-        })
-        .catch((error) => {
-          console.error('Error:', error);
-          setError(error.response?.data?.message || 'Registration failed');
-        });
+      try {
+        const response = await axios.post("https://notes-backend-x9sp.onrender.com/user/signup", formData, { withCredentials: true });
+        console.log('Response:', response.data);
+        if (response.data.success) {
+          localStorage.setItem('sessionId', response.data.sessionId);
+          console.log('Session ID:', response.data.sessionId);
+          navigate('/user/login'); 
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        setError(error.response?.data?.message || 'Registration failed');
+      }
     } else {
       console.log('All fields are required');
       setError('All fields are required');

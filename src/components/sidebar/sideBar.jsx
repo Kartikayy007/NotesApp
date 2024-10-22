@@ -1,8 +1,7 @@
-import React, {useState} from "react";
+import React, { useState, useEffect } from "react";
 import Styles from "./sideBar.module.css";
 
 const SideBar = ({
-  notes,
   setNotes,
   newnote,
   deleteNote,
@@ -14,6 +13,53 @@ const SideBar = ({
   searchingNote,
   colortag,
 }) => {
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [editNoteID, editingNoteID] = useState("");
+  const [localNotes, setLocalNotes] = useState([]);
+
+  useEffect(() => {
+    const fetchNotes = async () => {
+      try {
+        setIsLoading(true);
+        setIsLoading(true);
+        
+        const token = localStorage.getItem('token');
+        if (!token) {
+          throw new Error('No authentication token found. Please login again.');
+        }
+
+        const response = await fetch('https://notes-backend-x9sp.onrender.com/notes/', {
+          method: 'GET',
+          credentials: 'include',
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`,
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          }
+        });
+
+        if (response.status === 401) {
+          throw new Error('Session expired. Please login again.');
+        }
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        setLocalNotes(data);
+        setNotes(data); 
+        setIsLoading(false);
+      } catch (err) {
+        setError(err.message);
+        setIsLoading(false);
+      }
+    };
+
+    fetchNotes();
+  }, []); 
+
   const hour = new Date().getHours();
   let greeting;
   if (hour < 12) {
@@ -26,7 +72,6 @@ const SideBar = ({
     greeting = "Good Evening 🌇";
   }
 
-  const [editNoteID, editingNoteID] = useState("");
   const colortags = {
     "": "gray",
     red: "red",
@@ -36,7 +81,7 @@ const SideBar = ({
     purple: "purple",
   };
 
-  const filteredNotes = notes.filter(
+  const filteredNotes = localNotes.filter(
     (note) =>
       (note.tag === selectedTag ||
         selectedTag === "" ||
@@ -49,9 +94,10 @@ const SideBar = ({
   };
 
   const editNoteName = (id, name) => {
-    const updatedNotes = notes.map((note) =>
+    const updatedNotes = localNotes.map((note) =>
       note.id === id ? { ...note, title: name } : note
     );
+    setLocalNotes(updatedNotes);
     setNotes(updatedNotes);
 
     if (active && active.id === id) {
@@ -74,6 +120,27 @@ const SideBar = ({
     return text;
   };
 
+  if (isLoading) {
+    return (
+      <div className={Styles.sideBar}>
+        <div className={Styles.greeting}>
+          <h1>Loading notes...</h1>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className={Styles.sideBar}>
+        <div className={Styles.greeting}>
+          <h1>Error loading notes</h1>
+          <p>{error}</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <>
       <input type="checkbox" id="hamburger" className={Styles.hamburger} />
@@ -94,7 +161,7 @@ const SideBar = ({
             className={Styles.searchInput}
             value={searching}
             onChange={(e) => searchingNote(e.target.value)}
-          ></input>
+          />
         </div>
 
         <div className={Styles.buttonContainer}>
