@@ -19,6 +19,8 @@ const SideBar = ({
   const [error, setError] = useState('');
   const [editNoteID, editingNoteID] = useState("");
 
+  
+
   useEffect(() => {
     const fetchNotes = async () => {
       try {
