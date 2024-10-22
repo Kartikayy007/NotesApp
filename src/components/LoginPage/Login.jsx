@@ -9,30 +9,27 @@ const LoginPage = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    setError('');
 
     try {
       const response = await axios.post('https://notes-backend-x9sp.onrender.com/user/login', {
         email,
         password
-      }, { 
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        }
-      });
+      }, { withCredentials: true });
 
-      console.log('Login response:', response.data);
-      
-      if (response.data && response.data.token) {
-        localStorage.setItem('token', response.data.token);
+      console.log(response.data);
+
+      if (response.data.success) {
+        localStorage.setItem('sessionid', response.data.data.sessionId);    
+        console.log('Session ID:', response.data.data.sessionId);    
         window.location.href = '/notes';
-      } else {
+      } 
+      else {
         setError('Login failed: No token received');
       }
-    } catch (err) {
+    } 
+    
+    catch (err) {
       console.error('Error during login:', err);
-      
       if (err.response) {
         setError(err.response.data?.message || 'Invalid credentials');
       } else if (err.request) {

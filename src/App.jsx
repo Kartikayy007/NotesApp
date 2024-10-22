@@ -11,14 +11,8 @@ const App = () => {
   const [active, setActive] = useState("");
   const [selectedTag, setSelectedTag] = useState("");
   const [searching, setSearchingNote] = useState("");
-  const [notes, setNotes] = useState(() => {
-    const savedNotes = localStorage.getItem("notes");
-    return savedNotes ? JSON.parse(savedNotes) : [];
-  });
+  const [notes, setNotes] = useState([]);
 
-  useEffect(() => {
-    localStorage.setItem("notes", JSON.stringify(notes));
-  }, [notes]);
 
   const newNote = () => {
     const newNote = {

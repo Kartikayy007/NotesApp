@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
 import Styles from "./sideBar.module.css";
+import axios from "axios";
 
 const SideBar = ({
+  notes,
   setNotes,
   newnote,
   deleteNote,
@@ -16,49 +18,44 @@ const SideBar = ({
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [editNoteID, editingNoteID] = useState("");
-  const [localNotes, setLocalNotes] = useState([]);
 
   useEffect(() => {
     const fetchNotes = async () => {
       try {
         setIsLoading(true);
-        setIsLoading(true);
-        
-        const token = localStorage.getItem('token');
-        if (!token) {
-          throw new Error('No authentication token found. Please login again.');
-        }
+        const sessionId = localStorage.getItem('sessionid');
 
-        const response = await fetch('https://notes-backend-x9sp.onrender.com/notes/', {
-          method: 'GET',
-          credentials: 'include',
+        const response = await axios.get('https://notes-backend-x9sp.onrender.com/notes/', {
           headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`,
+            'Authorization': `Bearer ${sessionId}`,
             'Content-Type': 'application/json',
             'Accept': 'application/json'
-          }
+          },
+          withCredentials: true 
         });
-
-        if (response.status === 401) {
-          throw new Error('Session expired. Please login again.');
-        }
-
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        const data = await response.json();
-        setLocalNotes(data);
-        setNotes(data); 
+        console.log('Response:', response.data);
+        
+        setNotes(response.data);
+        console.log(notes);
+        
         setIsLoading(false);
+
       } catch (err) {
-        setError(err.message);
+        console.error('Error fetching notes:', err);
+        if (err.response?.status === 401) {
+          localStorage.removeItem('uuid');
+          console.log('Session expired. Redirecting to login page');
+          localStorage.removeItem('sessionid');
+          // window.location.href = '/user/login'; 
+        }
+        setError(err.message || 'Failed to fetch notes');
         setIsLoading(false);
       }
     };
 
     fetchNotes();
-  }, []); 
+  }, [setNotes]);
+
 
   const hour = new Date().getHours();
   let greeting;
@@ -81,24 +78,24 @@ const SideBar = ({
     purple: "purple",
   };
 
-  const filteredNotes = localNotes.filter(
-    (note) =>
-      (note.tag === selectedTag ||
-        selectedTag === "" ||
-        (selectedTag === "none" && note.tag === "")) &&
-      note.title.toLowerCase().indexOf(searching.toLowerCase()) !== -1
-  );
+  // const filteredNotes = notes.filter(
+  //   (note) =>
+  //     (note.tag === selectedTag ||
+  //       selectedTag === "" ||
+  //       (selectedTag === "none" && note.tag === "")) &&
+  //     note.title.toLowerCase().indexOf(searching.toLowerCase()) !== -1
+  // );
 
   const editingNoteName = (id) => {
     editingNoteID(id);
   };
 
   const editNoteName = (id, name) => {
-    const updatedNotes = localNotes.map((note) =>
+    const updatedNotes = notes.map((note) =>
       note.id === id ? { ...note, title: name } : note
     );
-    setLocalNotes(updatedNotes);
     setNotes(updatedNotes);
+    console.log(notes);
 
     if (active && active.id === id) {
       setactive({...active, title: name});
@@ -190,7 +187,8 @@ const SideBar = ({
           </select>
         </div>
         <div className={Styles.noteList}>
-          {filteredNotes.map((note) => (
+          (console.log(notes))
+          {notes.map((note) => (
             <div
               key={note.id}
               className={`${Styles.noteItem} ${
