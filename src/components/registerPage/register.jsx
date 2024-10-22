@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import Styles from './register.module.css';
 import axios from 'axios';
 
-const RegisterPage = ({ onRegistrationSuccess }) => {
+const RegisterPage = () => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -25,13 +25,12 @@ const RegisterPage = ({ onRegistrationSuccess }) => {
           if (response.data.sessionId) {
             localStorage.setItem('sessionId', response.data.sessionId);
             console.log('Session ID:', response.data.sessionId);
-            onRegistrationSuccess();
             navigate('/login'); 
           }
-          console.log('Form submitted:', formData);
         })
         .catch((error) => {
           console.error('Error:', error);
+          setError(error.response?.data?.message || 'Registration failed');
         });
     } else {
       console.log('All fields are required');

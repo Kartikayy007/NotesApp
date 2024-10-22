@@ -16,20 +16,25 @@ const LoginPage = () => {
         email,
         password
       }, { withCredentials: true });
+      
       console.log('Full API response:', response);
       console.log('API response data:', response.data);
       console.log('API response sessionId:', response.data.sessionId);
-      if (response.data && response.data.sessionId) {
+
+      if (response.data && response.data.success) {
         localStorage.setItem('sessionId', response.data.sessionId);
         console.log('Session ID:', response.data.sessionId);
-        window.location.href = '/home';
+        window.location.href = '/';
       } else if (response.data && response.data.error) {
         setError(response.data.error);
       } else {
         setError('Login failed. Please try again.');
       }
-    } catch (err) {
-      console.log('Errorv login:', err);
+    
+    } 
+    catch (err) {
+      console.error('Error during login:', err);
+      setError(err.response?.data?.message || 'Invalid email or password');
     }
   };
 
