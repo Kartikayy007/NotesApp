@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import Styles from "./sideBar.module.css";
 import axios from "axios";
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const SideBar = ({
   notes,
@@ -17,9 +19,8 @@ const SideBar = ({
 }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
-  const [editNoteID, editingNoteID] = useState("");
-
-  
+  const [editNoteID, setEditingNoteID] = useState("");
+  const [tempTitle, setTempTitle] = useState("");
 
   useEffect(() => {
     const fetchNotes = async () => {
@@ -52,6 +53,7 @@ const SideBar = ({
         }
         setError(err.message || "Failed to fetch notes");
         setIsLoading(false);
+        toast.error("Failed to fetch notes. Please try again.");
       }
     };
 
@@ -80,10 +82,14 @@ const SideBar = ({
       const newNote = response.data;
       setNotes((prevNotes) => [...prevNotes, newNote]);
       setactive(newNote);
+      
+      console.log("Note created successfully");
+      toast.success("Note created successfully");
   
     } catch (err) {
       console.error("Error creating new note:", err);
       setError("Failed to create note");
+      toast.error("Failed to create new note");
     }
   };
 
@@ -106,10 +112,13 @@ const SideBar = ({
       if (active && active._id === note._id) {
         setactive('');
       }
+
+      toast.success("Note deleted successfully");
       
     } catch (err) {
       console.error("Error deleting note:", err);
       setError("Failed to delete note");
+      toast.error("Failed to delete note");
     }
   }
 
@@ -134,23 +143,59 @@ const SideBar = ({
     purple: "purple",
   };
 
-  const editingNoteName = (id) => {
-    editingNoteID(id);
+  const editingNoteName = (id, currentTitle) => {
+    setEditingNoteID(id);
+    setTempTitle(currentTitle);
   };
 
-  const editNoteName = (id, name) => {
-    const updatedNotes = notes.map((note) =>
-      note.id === id ? { ...note, title: name } : note
-    );
-    setNotes(updatedNotes);
+  const handleTitleChange = (e) => {
+    setTempTitle(textLghtReduce(e.target.value, 15));
+  };
 
-    if (active && active.id === id) {
-      setactive({ ...active, title: name });
+  const editNoteName = async (noteId) => {
+    try {
+      const sessionId = localStorage.getItem("sessionid");
+      const noteToUpdate = notes.find(note => note._id === noteId);
+      if (!noteToUpdate) return;
+
+      await axios.put(
+        `https://notes-backend-x9sp.onrender.com/notes/${noteId}`,
+        {
+          title: tempTitle,
+          description: noteToUpdate.description
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${sessionId}`,
+            "Content-Type": "application/json",
+          },
+          withCredentials: true,
+        }
+      );
+
+      const updatedNotes = notes.map((note) =>
+        note._id === noteId ? { ...note, title: tempTitle } : note
+      );
+      setNotes(updatedNotes);
+
+      if (active && active._id === noteId) {
+        setactive({ ...active, title: tempTitle });
+      }
+
+      toast.success("Note renamed successfully");
+    } catch (err) {
+      console.error("Error updating note title:", err);
+      setError("Failed to update note title");
+      toast.error("Failed to rename note");
     }
   };
 
-  const finishEditing = () => {
-    editingNoteID("");
+  const finishEditing = (noteId) => {
+    if (tempTitle !== "") {
+      editNoteName(noteId);
+    }
+    setEditingNoteID("");
+    setTempTitle("");
   };
 
   const homeClick = () => {
@@ -187,6 +232,7 @@ const SideBar = ({
 
   return (
     <>
+      <ToastContainer />
       <input type="checkbox" id="hamburger" className={Styles.hamburger} />
       <label htmlFor="hamburger" className={Styles.hamburger}></label>
       <div className={Styles.sideBar}>
@@ -268,17 +314,17 @@ const SideBar = ({
                   {editNoteID === note._id ? (
                     <input
                       type="text"
-                      value={note.title}
-                      onChange={(e) =>
-                        editNoteName(note._id, textLghtReduce(e.target.value, 15))
-                      }
-                      onBlur={finishEditing}
+                      value={tempTitle}
+                      onChange={handleTitleChange}
+                      onBlur={() => finishEditing(note._id)}
                       onKeyDown={(e) => {
                         if (e.key === "Enter") {
-                          finishEditing();
+                          finishEditing(note._id);
                         }
                       }}
+                      onClick={(e) => e.stopPropagation()}
                       className={Styles.editNoteIDInput}
+                      autoFocus
                     />
                   ) : (
                     <span
@@ -295,7 +341,7 @@ const SideBar = ({
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
-                        editingNoteName(note._id);
+                        editingNoteName(note._id, note.title);
                       }}
                     >
                       Rename

@@ -3,6 +3,8 @@ import ReactQuill from 'react-quill';
 import axios from 'axios';
 import 'quill/dist/quill.snow.css';
 import Styles from './notes.module.css';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Notes = ({ active, updateNote }) => {
   const [title, setTitle] = useState('');
@@ -59,7 +61,8 @@ const Notes = ({ active, updateNote }) => {
         console.log('Note saved successfully');
         setIsEdited(false);
         setSaveStatus('Saved');
-        
+        toast.success('Note saved successfully');
+
         updateNote({
           ...active,
           title: title,
@@ -68,10 +71,12 @@ const Notes = ({ active, updateNote }) => {
       } else {
         console.error('Failed to save note');
         setSaveStatus('Save Failed');
+        toast.error('Failed to save note');
       }
     } catch (error) {
       console.error('Error saving note:', error);
       setSaveStatus('Save Failed');
+      toast.error('Error saving note');
     }
   };
 
@@ -117,12 +122,13 @@ const Notes = ({ active, updateNote }) => {
 
   return (
     <div className={Styles.notesContainer}>
+      <ToastContainer />
       <div className={Styles.noteHeader}>
         <input
           type="text"
           value={title}
           onChange={handleTitleChange}
-          placeholder="Note title"
+          placeholder="Note tit̀̀le"
           className={Styles.noteTitle}
         />
         <button
